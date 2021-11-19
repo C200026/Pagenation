@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once("functions.php");
 define("MAXITEM", 5);  // 最大表示件数 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){     // 最初の条件検索時
@@ -10,10 +10,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){     // 最初の条件検索時
     $page = 1;  // 初期表示は1ページ
 } elseif($_SERVER['REQUEST_METHOD'] === 'GET'){  // ページネーション時
     if (isset($_GET['page'])) {
-        select * from $_GET limit 0, MAXITEM;
+        $page = (int)$_GET["page"];
         $name = htmlspecialchars($_GET["name"], ENT_QUOTES, 'UTF-8');
     } else {
-        select * from $_GET limit $start, $start + MAXITEM;
+        $page = 1;
         $name = htmlspecialchars($_GET["name"], ENT_QUOTES, 'UTF-8');
     }
 
@@ -32,7 +32,7 @@ $dbh = db_conn();
 $data = [];
 
 try{
-    $sql = "SELECT * FROM user WHERE name like :name [SQL文に追加]";
+    $sql = "SELECT * FROM user WHERE name like :name LIMIT 0,".MAXITEM;
     $stmt = $dbh->prepare($sql);
     $stmt->bindValue(':name', '%'.$name.'%', PDO::PARAM_STR);
     $stmt->bindValue(':start', $start, PDO::PARAM_INT);
@@ -103,7 +103,7 @@ try{
 	?>
 	<?php 
 	   for ($x=1; $x <= $pagination ; $x++) {
-	      if($page < $pagination){
+	      if($page == 1){
 		      echo $x;
 	      } else {
 	          echo ' ';
