@@ -32,7 +32,7 @@ $dbh = db_conn();
 $data = [];
 
 try{
-    $sql = "SELECT * FROM user WHERE name like :name LIMIT 0,".MAXITEM;
+    $sql = "SELECT * FROM user WHERE name like :name LIMIT :start, :page";
     $stmt = $dbh->prepare($sql);
     $stmt->bindValue(':name', '%'.$name.'%', PDO::PARAM_STR);
     $stmt->bindValue(':start', $start, PDO::PARAM_INT);
@@ -103,7 +103,7 @@ try{
 	?>
 	<?php 
 	   for ($x=1; $x <= $pagination ; $x++) {
-	      if($page === 1){
+	      if($page == $x){
 		      echo $x;
 	      } else {
 	          echo ' ';
